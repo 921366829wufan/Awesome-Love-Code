@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逃跑的方块</title>
+    <style>
+        /* 重置默认样式，确保页面在不同浏览器中表现一致 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 设置body样式，使其占满整个视口 */
+        body {
+            min-height: 100vh; /* 最小高度为视口高度 */
+            display: flex; /* 使用弹性布局 */
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* 渐变背景 */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 设置字体 */
+            overflow: hidden; /* 隐藏溢出内容 */
+        }
+        
+        /* 容器样式，用于放置内容和标题 */
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 标题样式 */
+        h1 {
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 说明文本样式 */
+        p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+        
+        /* 方块的样式 */
+        #box {
+            width: 120px; /* 宽度 */
+            height: 120px; /* 高度 */
+            background-color: #ff4757; /* 初始背景颜色 */
+            border-radius: 10px; /* 圆角 */
+            position: absolute; /* 绝对定位，便于移动 */
+            transition: all 0.6s ease; /* 过渡效果：所有属性变化在0.6秒内平滑完成 */
+            cursor: pointer; /* 鼠标指针变为手型 */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* 阴影效果 */
+            display: flex; /* 使用弹性布局 */
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            color: white; /* 文字颜色 */
+            font-weight: bold; /* 文字加粗 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* 文字阴影 */
+        }
+        
+        /* 鼠标悬停时方块的样式 */
+        #box:hover {
+            transform: scale(1.05); /* 轻微放大 */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* 增强阴影 */
+        }
+        
+        /* 页脚样式 */
+        footer {
+            position: absolute;
+            bottom: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div class="container">
+        <h1>鼠标悬停特效</h1>
+        <p>将鼠标悬停在下面的方块上，它会随机改变颜色并移动到新位置。尝试捕捉它！</p>
+    </div> -->
+    
+    <div id="box">来抓我呀！</div>
+    
+    <!-- <footer>前端学习示例 - 鼠标悬停效果</footer> -->
+
+    <script>
+        // 获取DOM元素
+        const box = document.getElementById('box');
+        
+        // 定义文本备选数组
+        const textOptions = [
+            "菜！",
+            "会不会玩？",
+            "抓不住我吧~",
+            "手没用可以剁了",
+            "抓我你还太嫩",
+            "哈哈~",
+            "来呀~",
+            "恭喜你没抓到我",
+        ];
+
+        // 从数组中随机选择一个文本
+        function getRandomText() {
+            const randomIndex = Math.floor(Math.random() * textOptions.length);
+            return textOptions[randomIndex];
+        }
+
+        // 初始化方块位置（居中）
+        function initializeBoxPosition() {
+            const x = (window.innerWidth - box.offsetWidth) / 2;
+            const y = (window.innerHeight - box.offsetHeight) / 2;
+            
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+        }
+        
+        // 页面加载时初始化方块位置
+        window.addEventListener('load', initializeBoxPosition);
+        
+        // 窗口大小改变时重新定位方块
+        window.addEventListener('resize', initializeBoxPosition);
+        
+        // 鼠标悬停事件处理
+        box.addEventListener('mouseover', function() {
+            // 随机生成新位置
+            // 计算最大可移动范围（视口宽度/高度减去方块的宽度/高度）
+            const maxX = window.innerWidth - this.offsetWidth;
+            const maxY = window.innerHeight - this.offsetHeight;
+
+            // 生成随机坐标
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            // 随机生成颜色（使用十六进制颜色代码）
+            const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+            
+            // 应用新位置和颜色
+            this.style.left = randomX + 'px';
+            this.style.top = randomY + 'px';
+            this.style.backgroundColor = randomColor;
+            
+            console.log("当前位置,left:"+this.style.left+",top:"+this.style.top)
+
+            // 更新方块文字
+            this.textContent = getRandomText();
+        });
+    </script>
+</body>
+</html>
